@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.diogo.mydatafile.MainActivity">
+
+    <LinearLayout
+        android:layout_width="396dp"
+        android:layout_height="509dp"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="-3dp"
+        tools:layout_editor_absoluteY="1dp">
+
+        <RadioButton
+            android:id="@+id/radioButtonActividade1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Actividade1" />
+
+        <RadioButton
+            android:id="@+id/radioButtonActividade2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Actividade2" />
+
+        <RadioButton
+            android:id="@+id/radioButtonActividade3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Actividade3" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="saveFile"
+            android:text="Recolher" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="sendFile"
+            android:text="Enviar" />
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="readFile"
+            android:text="Button" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
