@@ -2,10 +2,15 @@ package pt.isec.cubi.tp1_cubi_2016_17;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -25,9 +30,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class MainActivity extends AppCompatActivity {
-    private SensorManager mSensorManager;
-    private Sensor mSensor;
-    private SensorEventListener mSensorEventListener;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static final int MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE = 98;
     public TextView tv;
@@ -39,11 +41,83 @@ public class MainActivity extends AppCompatActivity {
     public File file;
     private RadioButton actividade1,actividade2,actividade3;
 
+    //Sensores
+    LocationListener locationListener;
+    LocationManager locationManager;
+    private SensorManager mSensorManager;
+    private Sensor acel;
+    private Sensor gyro;
+    private Sensor lumi;
+    private SensorEventListener listenerAcel;
+    private SensorEventListener listenerGyro;
+    private SensorEventListener listenerLumi;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tv = (TextView) findViewById(R.id.textView);
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        acel = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        gyro = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        lumi = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+
+        locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+
+            }
+
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
+            public void onProviderEnabled(String provider) {
+            }
+
+            public void onProviderDisabled(String provider) {
+            }
+        };
+
+        listenerAcel = new SensorEventListener() {
+            @Override
+            public void onAccuracyChanged(Sensor arg0, int arg1) {
+            }
+
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+
+            }
+        };
+
+        listenerGyro = new SensorEventListener() {
+            @Override
+            public void onAccuracyChanged(Sensor arg0, int arg1) {
+            }
+
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+
+            }
+        };
+
+        listenerLumi = new SensorEventListener() {
+            @Override
+            public void onAccuracyChanged(Sensor arg0, int arg1) {
+            }
+
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+
+            }
+        };
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        mSensorManager.registerListener(listenerAcel, acel, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(listenerGyro, gyro, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(listenerLumi, lumi, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     public void saveFile(View button){

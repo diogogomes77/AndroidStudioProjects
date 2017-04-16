@@ -1,10 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="pt.isec.cubi.tp1_cubi_2016_17.MainActivity">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context="pt.isec.cubi.tp1_cubi_2016_17.MainActivity"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp">
+
+    <RadioButton
+        android:id="@+id/Andar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:checked="false"
+        android:duplicateParentState="false"
+        android:text="Andar"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+    <RadioButton
+        android:id="@+id/Correr"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Correr"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+    <RadioButton
+        android:id="@+id/DescerEscada"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Descer Escada"
+        app:layout_constraintLeft_toRightOf="@+id/Correr"
+        app:layout_constraintRight_toRightOf="@+id/Correr"
+        app:layout_constraintTop_toBottomOf="@+id/Correr"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+    <RadioButton
+        android:id="@+id/SubirEscada"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Subir Escada"
+        app:layout_constraintLeft_toRightOf="@+id/DescerEscada"
+        app:layout_constraintRight_toRightOf="@+id/DescerEscada"
+        app:layout_constraintTop_toBottomOf="@+id/DescerEscada"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+    <RadioButton
+        android:id="@+id/Bicicleta"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Andar de Bicicleta"
+        app:layout_constraintLeft_toRightOf="@+id/SubirEscada"
+        app:layout_constraintRight_toRightOf="@+id/SubirEscada"
+        app:layout_constraintTop_toBottomOf="@+id/SubirEscada"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+    <RadioButton
+        android:id="@+id/Sentar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Sentar"
+        app:layout_constraintLeft_toRightOf="@+id/Bicicleta"
+        app:layout_constraintRight_toRightOf="@+id/Bicicleta"
+        app:layout_constraintTop_toBottomOf="@+id/Bicicleta"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+    <RadioButton
+        android:id="@+id/Conduzir"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:checked="false"
+        android:text="Conduzir"
+        app:layout_constraintLeft_toRightOf="@+id/Sentar"
+        app:layout_constraintRight_toRightOf="@+id/Sentar"
+        app:layout_constraintTop_toBottomOf="@+id/Sentar"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+    <Button
+        android:id="@+id/Comecar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Começar recolha"
+        app:layout_constraintLeft_toRightOf="@+id/Conduzir"
+        app:layout_constraintRight_toRightOf="@+id/Conduzir"
+        app:layout_constraintTop_toBottomOf="@+id/Conduzir"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+    <Button
+        android:id="@+id/Parar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Parar Recolha"
+        app:layout_constraintLeft_toRightOf="@+id/Comecar"
+        app:layout_constraintRight_toRightOf="@+id/Comecar"
+        app:layout_constraintTop_toBottomOf="@+id/Comecar"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+    <Button
+        android:id="@+id/Transferir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Transferir Dados"
+        app:layout_constraintLeft_toRightOf="@+id/Parar"
+        app:layout_constraintRight_toRightOf="@+id/Parar"
+        app:layout_constraintTop_toBottomOf="@+id/Parar"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
     <Button
         android:id="@+id/button"
@@ -21,4 +156,4 @@
         android:layout_height="wrap_content"
         android:text="TextView" />
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
