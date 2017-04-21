@@ -66,32 +66,6 @@
         tools:layout_constraintTop_creator="1" />
 
     <RadioButton
-        android:id="@+id/Bicicleta"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="Andar de Bicicleta"
-        app:layout_constraintLeft_toRightOf="@+id/SubirEscada"
-        app:layout_constraintRight_toRightOf="@+id/SubirEscada"
-        app:layout_constraintTop_toBottomOf="@+id/SubirEscada"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1" />
-
-    <RadioButton
-        android:id="@+id/Sentar"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="Sentar"
-        app:layout_constraintLeft_toRightOf="@+id/Bicicleta"
-        app:layout_constraintRight_toRightOf="@+id/Bicicleta"
-        app:layout_constraintTop_toBottomOf="@+id/Bicicleta"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1" />
-
-    <RadioButton
         android:id="@+id/Conduzir"
         android:layout_width="match_parent"
         android:layout_height="0dp"

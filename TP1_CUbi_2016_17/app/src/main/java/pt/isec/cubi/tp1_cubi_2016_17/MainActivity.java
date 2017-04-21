@@ -52,6 +52,18 @@ public class MainActivity extends AppCompatActivity {
     private SensorEventListener listenerGyro;
     private SensorEventListener listenerLumi;
 
+    //Guarda valor atual do sensor para comparação com o seguinte
+    double lat;
+    double lon;
+    double alt;
+    float xAcc;
+    float yAcc;
+    float zAcc;
+    float xGyro;
+    float yGyro;
+    float zGyro;
+    float luminosidade;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +77,9 @@ public class MainActivity extends AppCompatActivity {
 
         locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
-
+                lat = location.getLatitude();
+                lon = location.getLongitude();
+                alt = location.getAltitude();
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -85,7 +99,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSensorChanged(SensorEvent event) {
-
+                xAcc = event.values[0];
+                yAcc = event.values[1];
+                zAcc = event.values[2];
             }
         };
 
@@ -96,7 +112,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSensorChanged(SensorEvent event) {
-
+                xGyro = event.values[0];
+                yGyro = event.values[1];
+                zGyro = event.values[2];
             }
         };
 
@@ -107,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSensorChanged(SensorEvent event) {
-
+                luminosidade = event.values[0];
             }
         };
 
