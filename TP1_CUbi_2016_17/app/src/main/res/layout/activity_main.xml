@@ -107,6 +107,7 @@
         android:id="@+id/Transferir"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="uploadFile"
         android:text="Transferir Dados"
         app:layout_constraintLeft_toRightOf="@+id/Parar"
         app:layout_constraintRight_toRightOf="@+id/Parar"

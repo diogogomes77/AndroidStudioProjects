@@ -11,11 +11,14 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -23,11 +26,23 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
+
+
 
 public class MainActivity extends AppCompatActivity {
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -40,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
     private String folder = "/cubi1617";
     public File file;
     private RadioButton actividade1,actividade2,actividade3;
+    private String host = "kenobi.dei.uc.pt";
+    private String user = "cubistudent";
+    private String passw = "mis_cub_2017";
 
     //Sensores
     LocationListener locationListener;
@@ -138,23 +156,41 @@ public class MainActivity extends AppCompatActivity {
         mSensorManager.registerListener(listenerLumi, lumi, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
+
+
     public void saveFile(View button){
         if (requestFilePermission(MainActivity.this)){
             checkExternalMedia();
             String txt="teste ficheiro escrita";
             if (toFile(txt))
                 tv.append("\n\nFile written ");
-
+            else
+                tv.append("\n\nProblem: No File written ");
         }
     }
-    private boolean toFile(String txt){
+    private boolean toFile(String message){
         checkExternalMedia();
         path = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
         tv.append("\nExternal file system root: "+path);
         dir = new File(path.getAbsolutePath() + folder);
         dir.mkdirs();
         file = new File(dir, filename);
+
+        BufferedWriter bw;
         try {
+            bw = new BufferedWriter(new FileWriter(file, true));
+            bw.write(message);
+            bw.newLine();
+            bw.flush();
+            bw.close();
+            //editText.setText(" ");
+            tv.append("\n\nFile written to "+file);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+       /* try {
             FileOutputStream f = new FileOutputStream(file);
             PrintWriter pw = new PrintWriter(f);
             pw.println("Hi , How are you");
@@ -171,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             return true;
         }
-        tv.append("\n\nFile written to "+file);
+        tv.append("\n\nFile written to "+file);*/
         return true;
     }
 
@@ -250,6 +286,67 @@ public class MainActivity extends AppCompatActivity {
 
             // other 'case' lines to check for other
             // permissions this app might request
+        }
+    }
+
+    public void uploadFile(View button) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 123);
+                } else {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 123);
+                }
+                permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                if (permissionCheck != PackageManager.PERMISSION_GRANTED)
+                    return;
+            }
+        }
+        new LongOperation().execute();
+    }
+
+    private class LongOperation extends AsyncTask<Void, Integer, String> {
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                JSch ssh = new JSch();
+                Session session = ssh.getSession("cubistudent", "kenobi.dei.uc.pt", 22);
+                // Remember that this is just for testing and we need a quick access, you can add an identity and known_hosts file to prevent
+                // Man In the Middle attacks
+                java.util.Properties config = new java.util.Properties();
+                config.put("StrictHostKeyChecking", "no");
+                session.setConfig(config);
+                session.setPassword("mis_cub_2017");
+
+                session.connect();
+                Channel channel = session.openChannel("sftp");
+                channel.connect();
+
+                ChannelSftp sftp = (ChannelSftp) channel;
+
+                sftp.cd("data");
+                // If you need to display the progress of the upload, read how to do it in the end of the article
+
+                // use the put method , if you are using android remember to remove "file://" and use only the relative path
+                sftp.put(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)+"/cubi1617/a21260825.dat", "a21260825.dat");
+                channel.disconnect();
+                session.disconnect();
+            } catch (JSchException e) {
+                System.out.println(e.getMessage().toString());
+                e.printStackTrace();
+            } catch (SftpException e) {
+                System.out.println(e.getMessage().toString());
+                e.printStackTrace();
+            }
+            return "Terminado";
+        }
+
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("PostExecuted",result);
         }
     }
 }
