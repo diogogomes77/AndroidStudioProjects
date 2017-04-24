@@ -71,9 +71,9 @@ public class MainActivity extends AppCompatActivity {
     private SensorEventListener listenerLumi;
 
     //Guarda valor atual do sensor para comparação com o seguinte
-    double lat;
-    double lon;
-    double alt;
+    double[] lat;
+    double[] lon;
+    double[] alt;
     float xAcc;
     float yAcc;
     float zAcc;
@@ -81,6 +81,16 @@ public class MainActivity extends AppCompatActivity {
     float yGyro;
     float zGyro;
     float luminosidade;
+
+    //Variáveis dos Radio Buttons
+    RadioButton andar;
+    RadioButton correr;
+    RadioButton subir;
+    RadioButton descer;
+    RadioButton conduzir;
+
+    String movimento;
+    String Angulo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,11 +103,36 @@ public class MainActivity extends AppCompatActivity {
         gyro = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         lumi = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
+        andar = (RadioButton) findViewById(R.id.Andar);
+        correr = (RadioButton) findViewById(R.id.Correr);
+        subir = (RadioButton) findViewById(R.id.SubirEscada);
+        descer = (RadioButton) findViewById(R.id.DescerEscada);
+        conduzir = (RadioButton) findViewById(R.id.Conduzir);
+
+        andar.setClickable(false);
+        correr.setClickable(false);
+        subir.setClickable(false);
+        descer.setClickable(false);
+        conduzir.setClickable(false);
+
+        lat = new double[5];
+        lon = new double[5];
+        alt = new double[5];
+
         locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
-                lat = location.getLatitude();
-                lon = location.getLongitude();
-                alt = location.getAltitude();
+                insere(location.getLatitude(),location.getLongitude(),location.getAltitude());
+                if(alt[0]>alt[1] && alt[1]>alt[2] && alt[2]>alt[3] && alt[3]>alt[4]){
+                    Angulo="Subir";
+                }
+                if(alt[0]<alt[1] && alt[1]<alt[2] && alt[2]<alt[3] && alt[3]<alt[4]){
+                    Angulo="Descer";
+                }
+                else{
+                    Angulo="Plano";
+                }
+
+                analisar();
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -146,7 +181,9 @@ public class MainActivity extends AppCompatActivity {
                 luminosidade = event.values[0];
             }
         };
+    }
 
+    public void comecar(View view) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
         }
@@ -156,7 +193,70 @@ public class MainActivity extends AppCompatActivity {
         mSensorManager.registerListener(listenerLumi, lumi, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
+    public void parar(View view) {
+        locationManager.removeUpdates(locationListener);
+        mSensorManager.unregisterListener(listenerAcel);
+        mSensorManager.unregisterListener(listenerGyro);
+        mSensorManager.unregisterListener(listenerLumi);
+    }
 
+    public void insere(double la,double lo,double al){
+        lat[4]=lat[3];
+        lat[3]=lat[2];
+        lat[2]=lat[1];
+        lat[1]=lat[0];
+        lat[0]=la;
+
+        lon[4]=lon[3];
+        lon[3]=lon[2];
+        lon[2]=lon[1];
+        lon[1]=lon[0];
+        lon[0]=lo;
+
+        alt[4]=alt[3];
+        alt[3]=alt[2];
+        alt[2]=alt[1];
+        alt[1]=alt[0];
+        alt[0]=al;
+    }
+
+    public void analisar(){
+        if(Angulo.equals("Subir") && movimento.equals("Andar")){
+            andar.setChecked(false);
+            correr.setChecked(false);
+            subir.setChecked(true);
+            descer.setChecked(false);
+            conduzir.setChecked(false);
+        }
+        if(Angulo.equals("Descer") && movimento.equals("Andar")){
+            andar.setChecked(false);
+            correr.setChecked(false);
+            subir.setChecked(false);
+            descer.setChecked(true);
+            conduzir.setChecked(false);
+        }
+        if(Angulo.equals("Plano") && movimento.equals("Andar")){
+            andar.setChecked(true);
+            correr.setChecked(false);
+            subir.setChecked(false);
+            descer.setChecked(false);
+            conduzir.setChecked(false);
+        }
+        if(movimento.equals("Correr")){
+            andar.setChecked(false);
+            correr.setChecked(true);
+            subir.setChecked(false);
+            descer.setChecked(false);
+            conduzir.setChecked(false);
+        }
+        if(Angulo.equals("Conduzir")){
+            andar.setChecked(false);
+            correr.setChecked(false);
+            subir.setChecked(false);
+            descer.setChecked(false);
+            conduzir.setChecked(true);
+        }
+    }
 
     public void saveFile(View button){
         if (requestFilePermission(MainActivity.this)){
