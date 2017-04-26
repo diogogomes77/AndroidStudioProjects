@@ -33,6 +33,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 
 
 import com.jcraft.jsch.Channel;
@@ -82,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
     float zGyro;
     float luminosidade;
 
+    Date[] d;
+
     //Variáveis dos Radio Buttons
     RadioButton andar;
     RadioButton correr;
@@ -119,6 +122,9 @@ public class MainActivity extends AppCompatActivity {
         lon = new double[5];
         alt = new double[5];
 
+        d = new Date[2];
+        d[0] = new Date();
+
         movimento="";
         Angulo="Plano";
 
@@ -134,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     Angulo="Plano";
                 }
+
+                calculate();
 
                 analisar();
             }
@@ -203,6 +211,36 @@ public class MainActivity extends AppCompatActivity {
         mSensorManager.unregisterListener(listenerLumi);
     }
 
+    public void calculate(){
+        final int R = 6371;
+
+        double latDistance = Math.toRadians(lat[1] - lat[0]);
+        double lonDistance = Math.toRadians(lon[1] - lon[0]);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat[0])) * Math.cos(Math.toRadians(lat[1]))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c * 1000;
+
+        double height = alt[0] - alt[1];
+
+        distance = Math.pow(distance, 2) + Math.pow(height, 2);
+
+        distance = Math.sqrt(distance);
+
+        double distanceBySeconds = distance;
+
+        if(distance <= 6){
+            movimento = "Andar";
+        }
+        else if(distance > 6 && distanceBySeconds <= 10) {
+            movimento = "Correr";
+        }
+        else if(distance > 10) {
+            movimento = "Conduzir";
+        }
+    }
+
     public void insere(double la,double lo,double al){
         lat[4]=lat[3];
         lat[3]=lat[2];
@@ -221,6 +259,9 @@ public class MainActivity extends AppCompatActivity {
         alt[2]=alt[1];
         alt[1]=alt[0];
         alt[0]=al;
+
+        d[1]=d[0];
+        d[0]=new Date();
     }
 
     public void analisar(){
