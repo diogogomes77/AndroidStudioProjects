@@ -119,6 +119,9 @@ public class MainActivity extends AppCompatActivity {
         lon = new double[5];
         alt = new double[5];
 
+        movimento="";
+        Angulo="Plano";
+
         locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 insere(location.getLatitude(),location.getLongitude(),location.getAltitude());
