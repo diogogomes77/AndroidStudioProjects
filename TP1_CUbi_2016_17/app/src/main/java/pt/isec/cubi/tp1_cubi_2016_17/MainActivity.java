@@ -49,6 +49,12 @@ public class MainActivity extends AppCompatActivity {
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static final int MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE = 98;
     public TextView tv;
+    public TextView tvlat;
+    public TextView tvlon;
+    public TextView tvalt;
+    public TextView tvacc;
+    public TextView tvgyr;
+    public TextView tvlum;
     public static final int REQUEST_WRITE_STORAGE = 112;
     private String filename = "a21260825.dat";
     private  File path;
@@ -112,6 +118,20 @@ public class MainActivity extends AppCompatActivity {
         descer = (RadioButton) findViewById(R.id.DescerEscada);
         conduzir = (RadioButton) findViewById(R.id.Conduzir);
 
+        tvlat = (TextView) findViewById(R.id.textViewLat);
+        tvlon = (TextView) findViewById(R.id.textViewLong);
+        tvalt = (TextView) findViewById(R.id.textViewAlt);
+        tvacc = (TextView) findViewById(R.id.textViewAcc);
+        tvgyr = (TextView) findViewById(R.id.textViewGyro);
+        tvlum = (TextView) findViewById(R.id.textViewLum);
+
+        tvlat.setText("");
+        tvlon.setText("");
+        tvalt.setText("");
+        tvacc.setText("");
+        tvgyr.setText("");
+        tvlum.setText("");
+
         andar.setClickable(false);
         correr.setClickable(false);
         subir.setClickable(false);
@@ -125,16 +145,19 @@ public class MainActivity extends AppCompatActivity {
         d = new Date[2];
         d[0] = new Date();
 
-        movimento="";
+        movimento="Andar";
         Angulo="Plano";
 
         locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 insere(location.getLatitude(),location.getLongitude(),location.getAltitude());
+                tvlat.setText("Latitude: " + lat[0]);
+                tvlon.setText("Longitude: " + lon[0]);
+                tvlat.setText("Altitude: " + alt[0]);
                 if(alt[0]>alt[1] && alt[1]>alt[2] && alt[2]>alt[3] && alt[3]>alt[4]){
                     Angulo="Subir";
                 }
-                if(alt[0]<alt[1] && alt[1]<alt[2] && alt[2]<alt[3] && alt[3]<alt[4]){
+                else if(alt[0]<alt[1] && alt[1]<alt[2] && alt[2]<alt[3] && alt[3]<alt[4]){
                     Angulo="Descer";
                 }
                 else{
@@ -166,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
                 xAcc = event.values[0];
                 yAcc = event.values[1];
                 zAcc = event.values[2];
+                tvacc.setText("Acelarómetro X: " + xAcc + " Y: " + yAcc + " Z: " + zAcc);
             }
         };
 
@@ -179,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
                 xGyro = event.values[0];
                 yGyro = event.values[1];
                 zGyro = event.values[2];
+                tvgyr.setText("Giroscopio X: " + xGyro + " Y: " + yGyro + " Z: " + zGyro);
             }
         };
 
@@ -190,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSensorChanged(SensorEvent event) {
                 luminosidade = event.values[0];
+                tvlum.setText("Luminosidade: " + luminosidade);
             }
         };
     }
