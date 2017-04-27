@@ -101,6 +101,8 @@ public class MainActivity extends AppCompatActivity {
     String movimento;
     String Angulo;
 
+    private long lastUpdate = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,6 +150,8 @@ public class MainActivity extends AppCompatActivity {
         movimento="Andar";
         Angulo="Plano";
 
+        analisar();
+
         locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 insere(location.getLatitude(),location.getLongitude(),location.getAltitude());
@@ -186,10 +190,26 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSensorChanged(SensorEvent event) {
-                xAcc = event.values[0];
-                yAcc = event.values[1];
-                zAcc = event.values[2];
-                tvacc.setText("Acelarómetro X: " + xAcc + " Y: " + yAcc + " Z: " + zAcc);
+                long curTime = System.currentTimeMillis();
+
+                if ((curTime - lastUpdate) > 1000) {
+                    long diffTime = (curTime - lastUpdate);
+                    lastUpdate = curTime;
+
+                    float speed = Math.abs(event.values[0] + event.values[1] + event.values[2] - xAcc - yAcc - zAcc)/ diffTime * 10000;
+
+                    if (speed > 600) {
+
+                    }
+
+                    xAcc = event.values[0];
+                    yAcc = event.values[1];
+                    zAcc = event.values[2];
+
+                    tvacc.setText("X: " + xAcc + " Y: " + yAcc + " Z: " + zAcc);
+                }
+
+                analisar();
             }
         };
 
