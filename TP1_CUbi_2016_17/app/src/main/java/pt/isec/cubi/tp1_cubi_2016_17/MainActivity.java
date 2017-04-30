@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
     String Angulo;
 
     private long lastUpdate = 0;
+    float[] gravity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
         d = new Date[2];
         d[0] = new Date();
 
+        gravity = new float[]{0, 0, 0};
+
         movimento="Andar";
         Angulo="Plano";
 
@@ -190,21 +193,20 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSensorChanged(SensorEvent event) {
+                final float alpha = 0.8f;
                 long curTime = System.currentTimeMillis();
+
+                gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
+                gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
+                gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
 
                 if ((curTime - lastUpdate) > 1000) {
                     long diffTime = (curTime - lastUpdate);
                     lastUpdate = curTime;
 
-                    float speed = Math.abs(event.values[0] + event.values[1] + event.values[2] - xAcc - yAcc - zAcc)/ diffTime * 10000;
-
-                    if (speed > 600) {
-
-                    }
-
-                    xAcc = event.values[0];
-                    yAcc = event.values[1];
-                    zAcc = event.values[2];
+                    xAcc = event.values[0] - gravity[0];;
+                    yAcc = event.values[1] - gravity[1];
+                    zAcc = event.values[2] - gravity[2];
 
                     tvacc.setText("X: " + xAcc + " Y: " + yAcc + " Z: " + zAcc);
                 }
