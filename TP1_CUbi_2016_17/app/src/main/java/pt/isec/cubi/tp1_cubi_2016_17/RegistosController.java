@@ -1,23 +1,6 @@
 package pt.isec.cubi.tp1_cubi_2016_17;
-
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
-import android.view.View;
 
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
-
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -72,12 +55,13 @@ public class RegistosController {
         }*/
     }
     public String startSaving() {
-        String result ="Trying to Save...\n";
-
+       // String result ="Trying to Save...\n";
+        String result ="";
         if (!saving) {
 
-            result+=("Saving...\n");
-            result+=(checkExternalMedia());
+           // result+=("Saving...\n");
+            //result+=(checkExternalMedia());
+            checkExternalMedia();
             path = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
             dir = new File(path.getAbsolutePath() + config.getFolder());
             dir.mkdirs();
@@ -88,7 +72,7 @@ public class RegistosController {
                 pw.close();
 
                 fw = new FileWriter(file, true);
-                result+=("ficheiro = "+file.getAbsolutePath()+"\n");
+              //  result+=("ficheiro = "+file.getAbsolutePath()+"\n");
                 saving = true;
 
                 bw = new BufferedWriter(fw);
@@ -114,14 +98,15 @@ public class RegistosController {
     }
 
     public String stopSaving() {
-        String result ="Trying to stop saving\n";
+       // String result ="Trying to stop saving\n";
+        String result ="";
         if (saving){
-            result+=("Stop Saving...\n");
+         //   result+=("Stop Saving...\n");
             try {
                // bw.flush();
                 bw.close();
                 saving = false;
-                result+=("Saving Stoped\n");
+            //    result+=("Saving Stoped\n");
             } catch (IOException e) {
                 e.printStackTrace();
                 result+=("ERRO: Saving not Stoped\n");
@@ -131,7 +116,7 @@ public class RegistosController {
         return result;
     }
 
-    private String checkExternalMedia(){
+    private void checkExternalMedia(){
         boolean mExternalStorageAvailable = false;
         boolean mExternalStorageWriteable = false;
         String state = Environment.getExternalStorageState();
@@ -148,8 +133,8 @@ public class RegistosController {
             mExternalStorageAvailable = mExternalStorageWriteable = false;
             // TODO
         }
-       return "\n\nExternal Media: readable="
-                +mExternalStorageAvailable+" writable="+mExternalStorageWriteable+"\n";
+       //return "\n\nExternal Media: readable="
+       //         +mExternalStorageAvailable+" writable="+mExternalStorageWriteable+"\n";
     }
 
     public void enviarRegistos(){
