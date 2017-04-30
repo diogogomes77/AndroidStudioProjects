@@ -176,11 +176,13 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     Angulo="Plano";
                 }
-                registocsv.setAlt(alt[0]);
-                registocsv.setLat(lat[0]);
-                registocsv.setLon(lon[0]);
-                if (registocsv.isComplete())
-                    registocsv = new Registo();
+
+                Registo reg = regController.getRegisto();
+                reg.setAlt(alt[0]);
+                reg.setLat(lat[0]);
+                reg.setLon(lon[0]);
+                regController.setRegisto(reg);
+
                 calculate();
 
                 analisar();
@@ -218,13 +220,11 @@ public class MainActivity extends AppCompatActivity {
                     yAcc = event.values[1] - gravity[1];
                     zAcc = event.values[2] - gravity[2];
 
-                    registocsv.setxAcc(xAcc);
-                    registocsv.setyAcc(yAcc);
-                    registocsv.setzAcc(zAcc);
-                    if (registocsv.isComplete()) {
-                        registos.add(registocsv);
-                        registocsv = new Registo();
-                    }
+                    Registo reg = regController.getRegisto();
+                    reg.setxAcc(xAcc);
+                    reg.setyAcc(yAcc);
+                    reg.setzAcc(zAcc);
+                    regController.setRegisto(reg);
 
                     tvacc.setText("X: " + xAcc + " Y: " + yAcc + " Z: " + zAcc);
                 }
@@ -251,11 +251,11 @@ public class MainActivity extends AppCompatActivity {
                     yGyro = event.values[1];
                     zGyro = event.values[2];
 
-                    registocsv.setxGyro(xGyro);
-                    registocsv.setyGyro(yGyro);
-                    registocsv.setzGyro(zGyro);
-                    if (registocsv.isComplete())
-                        registocsv = new Registo();
+                    Registo reg = regController.getRegisto();
+                    reg.setxGyro(xGyro);
+                    reg.setyGyro(yGyro);
+                    reg.setzGyro(zGyro);
+                    regController.setRegisto(reg);
 
                     tvgyr.setText("Giroscopio X: " + xGyro + " Y: " + yGyro + " Z: " + zGyro);
                 }
@@ -279,7 +279,10 @@ public class MainActivity extends AppCompatActivity {
 
                     luminosidade = event.values[0];
 
-                    registocsv.setLuminosidade(luminosidade);
+                    Registo reg = regController.getRegisto();
+                    reg.setLuminosidade(luminosidade);
+                    regController.setRegisto(reg);
+
                     tvlum.setText("Luminosidade: " + luminosidade);
                 }
             }

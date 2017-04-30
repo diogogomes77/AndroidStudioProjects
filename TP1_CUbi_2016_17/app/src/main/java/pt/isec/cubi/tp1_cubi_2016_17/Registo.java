@@ -16,20 +16,9 @@ public class Registo {
     private Float yGyro;
     private Float zGyro;
     private  Float luminosidade;
-    boolean complete;
-
-    private Registo instance = null;
 
     public Registo () {
         this.timestamp = new Date().getTime();
-        complete = false;
-    }
-
-    public Registo getInstance(){
-        if (instance == null) {
-            instance = new Registo();
-        }
-        return instance;
     }
 
     public boolean isComplete(){
@@ -43,7 +32,6 @@ public class Registo {
         if (alt == null) {
             return false;
         }
-
         if (xAcc == null) {
             return false;
         }
@@ -65,57 +53,45 @@ public class Registo {
         if (luminosidade == null) {
             return false;
         }
-
-        // Save csv
         return true;
     }
     public void setLat(Double lat) {
         this.lat = lat;
-
     }
 
     public void setLon(Double lon) {
         this.lon = lon;
-
     }
 
     public void setAlt(Double alt) {
         this.alt = alt;
-
     }
 
     public void setxAcc(Float xAcc) {
         this.xAcc = xAcc;
-
     }
 
     public void setyAcc(Float yAcc) {
         this.yAcc = yAcc;
-
     }
 
     public void setzAcc(Float zAcc) {
         this.zAcc = zAcc;
-
     }
 
     public void setxGyro(Float xGyro) {
         this.xGyro = xGyro;
-
     }
 
     public void setyGyro(Float yGyro) {
         this.yGyro = yGyro;
-
     }
 
     public void setzGyro(Float zGyro) {
         this.zGyro = zGyro;
- ;
     }
 
     public void setLuminosidade(Float luminosidade) {
         this.luminosidade = luminosidade;
-
     }
 }

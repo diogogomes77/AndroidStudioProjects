@@ -29,7 +29,14 @@ public class RegistosController {
         return reg;
     }
 
+    public void setRegisto(Registo registo){
+        reg = registo;
+        if (reg.isComplete()) {
+            saveRegisto();
+            reg = new Registo();
+        }
+    }
     private void saveRegisto(){
-
+        // TODO
     }
 }
