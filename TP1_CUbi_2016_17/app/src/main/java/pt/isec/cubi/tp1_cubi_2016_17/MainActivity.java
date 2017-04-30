@@ -57,15 +57,10 @@ public class MainActivity extends AppCompatActivity {
     public TextView tvgyr;
     public TextView tvlum;
     public static final int REQUEST_WRITE_STORAGE = 112;
-    private String filename = "a21260825.dat";
-    private  File path;
-    private File dir;
-    private String folder = "/cubi1617";
-    public File file;
+    private Configuracao config;
+
     private RadioButton actividade1,actividade2,actividade3;
-    private String host = "kenobi.dei.uc.pt";
-    private String user = "cubistudent";
-    private String passw = "mis_cub_2017";
+
 
     //Sensores
     LocationListener locationListener;
@@ -106,13 +101,16 @@ public class MainActivity extends AppCompatActivity {
     private long lastUpdateGyro = 0;
     private long lastUpdateLumi = 0;
     float[] gravity;
-    RegistosController regController;
+    private RegistosController regController;
+
+    private boolean recolhaIniciada;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        regController = new RegistosController();
+        regController = RegistosController.getInstance();
+        config =  Configuracao.getInstance();
 
         tv = (TextView) findViewById(R.id.textView);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -289,21 +287,32 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    public void comecar(View view) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+    public void iniciarRecolha(View view) {
+        if (!recolhaIniciada) {
+            if (requestFilePermission(MainActivity.this)) {
+                if (requestGPSPermission(MainActivity.this)) {
+                    mSensorManager.registerListener(listenerAcel, acel, SensorManager.SENSOR_DELAY_NORMAL);
+                    mSensorManager.registerListener(listenerGyro, gyro, SensorManager.SENSOR_DELAY_NORMAL);
+                    mSensorManager.registerListener(listenerLumi, lumi, SensorManager.SENSOR_DELAY_NORMAL);
+                    recolhaIniciada = true;
+                } else {
+                    // TODO
+                }
+            } else {
+                // TODO
+            }
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
-        mSensorManager.registerListener(listenerAcel, acel, SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(listenerGyro, gyro, SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(listenerLumi, lumi, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    public void parar(View view) {
-        locationManager.removeUpdates(locationListener);
-        mSensorManager.unregisterListener(listenerAcel);
-        mSensorManager.unregisterListener(listenerGyro);
-        mSensorManager.unregisterListener(listenerLumi);
+    public void pararRecolha(View view) {
+        if (recolhaIniciada) {
+            locationManager.removeUpdates(locationListener);
+            mSensorManager.unregisterListener(listenerAcel);
+            mSensorManager.unregisterListener(listenerGyro);
+            mSensorManager.unregisterListener(listenerLumi);
+            regController.stopSaving();
+            recolhaIniciada = false;
+        }
     }
 
     public void calculate(){
@@ -334,6 +343,9 @@ public class MainActivity extends AppCompatActivity {
         else if(distance > 10) {
             movimento = "Conduzir";
         }
+        Registo reg = regController.getRegisto();
+        reg.setActivity(movimento.concat(" ").concat(Angulo));
+        regController.setRegisto(reg);
     }
 
     public void insere(double la,double lo,double al){
@@ -397,77 +409,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void saveFile(View button){
-        if (requestFilePermission(MainActivity.this)){
-            checkExternalMedia();
-            String txt="teste ficheiro escrita";
-            if (toFile(txt))
-                tv.append("\n\nFile written ");
-            else
-                tv.append("\n\nProblem: No File written ");
+    private boolean requestGPSPermission(Activity context) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
         }
-    }
-    private boolean toFile(String message){
-        checkExternalMedia();
-        path = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-        tv.append("\nExternal file system root: "+path);
-        dir = new File(path.getAbsolutePath() + folder);
-        dir.mkdirs();
-        file = new File(dir, filename);
-
-        BufferedWriter bw;
-        try {
-            bw = new BufferedWriter(new FileWriter(file, true));
-            bw.write(message);
-            bw.newLine();
-            bw.flush();
-            bw.close();
-            //editText.setText(" ");
-            tv.append("\n\nFile written to "+file);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-       /* try {
-            FileOutputStream f = new FileOutputStream(file);
-            PrintWriter pw = new PrintWriter(f);
-            pw.println("Hi , How are you");
-            pw.println("Hello");
-            pw.flush();
-            pw.close();
-            f.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            tv.append("******* File not found. Did you" +
-                    " add a WRITE_EXTERNAL_STORAGE permission to the   manifest?");
-            return false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return true;
-        }
-        tv.append("\n\nFile written to "+file);*/
-        return true;
-    }
-
-    private void checkExternalMedia(){
-        boolean mExternalStorageAvailable = false;
-        boolean mExternalStorageWriteable = false;
-        String state = Environment.getExternalStorageState();
-
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            // Can read and write the media
-            mExternalStorageAvailable = mExternalStorageWriteable = true;
-        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            // Can only read the media
-            mExternalStorageAvailable = true;
-            mExternalStorageWriteable = false;
+        boolean hasPermission = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+        if (!hasPermission) {
+            ActivityCompat.requestPermissions(context,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_LOCATION);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
         } else {
-            // Can't read or write
-            mExternalStorageAvailable = mExternalStorageWriteable = false;
+           // TODO
         }
-        tv.append("\n\nExternal Media: readable="
-                +mExternalStorageAvailable+" writable="+mExternalStorageWriteable);
+        return hasPermission;
+
     }
     private boolean requestFilePermission(Activity context) {
         boolean hasPermission = (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
@@ -477,16 +433,15 @@ public class MainActivity extends AppCompatActivity {
                     REQUEST_WRITE_STORAGE);
         } else {
             // You are allowed to write external storage:
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/new_folder";
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + config.getFolder();
             File storageDir = new File(path);
             if (!storageDir.exists() && !storageDir.mkdirs()) {
-                // This should never happen - log handled exception!
+                // TODO
             }
         }
         return hasPermission;
 
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -542,50 +497,9 @@ public class MainActivity extends AppCompatActivity {
                     return;
             }
         }
-        new LongOperation().execute();
+        regController.enviarCSV();
+        //new LongOperation().execute();
     }
 
-    private class LongOperation extends AsyncTask<Void, Integer, String> {
-        @Override
-        protected String doInBackground(Void... params) {
-            try {
-                JSch ssh = new JSch();
-                Session session = ssh.getSession("cubistudent", "kenobi.dei.uc.pt", 22);
-                // Remember that this is just for testing and we need a quick access, you can add an identity and known_hosts file to prevent
-                // Man In the Middle attacks
-                java.util.Properties config = new java.util.Properties();
-                config.put("StrictHostKeyChecking", "no");
-                session.setConfig(config);
-                session.setPassword("mis_cub_2017");
 
-                session.connect();
-                Channel channel = session.openChannel("sftp");
-                channel.connect();
-
-                ChannelSftp sftp = (ChannelSftp) channel;
-
-                sftp.cd("data");
-                // If you need to display the progress of the upload, read how to do it in the end of the article
-
-                // use the put method , if you are using android remember to remove "file://" and use only the relative path
-                sftp.put(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)+"/cubi1617/a21260825.dat", "a21260825.dat");
-                channel.disconnect();
-                session.disconnect();
-            } catch (JSchException e) {
-                System.out.println(e.getMessage().toString());
-                e.printStackTrace();
-            } catch (SftpException e) {
-                System.out.println(e.getMessage().toString());
-                e.printStackTrace();
-            }
-            return "Terminado";
-        }
-
-
-
-        @Override
-        protected void onPostExecute(String result) {
-            Log.d("PostExecuted",result);
-        }
-    }
 }

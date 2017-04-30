@@ -16,9 +16,42 @@ public class Registo {
     private Float yGyro;
     private Float zGyro;
     private  Float luminosidade;
+    private String activity;
 
     public Registo () {
         this.timestamp = new Date().getTime();
+    }
+
+    public String csvHeader(){
+        return ("lat,lng,alt,timestamp,x_acc,y_acc,z_acc,x_gyro,y_gyro,z_gyro,optSensor,activity");
+    }
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("\"");
+        sb.append(lat);
+        sb.append("\",\"");
+        sb.append(lon);
+        sb.append("\",\"");
+        sb.append(alt);
+        sb.append("\",\"");
+        sb.append(timestamp);
+        sb.append("\",\"");
+        sb.append(xAcc);
+        sb.append("\",\"");
+        sb.append(yAcc);
+        sb.append("\",\"");
+        sb.append(zAcc);
+        sb.append("\",\"");
+        sb.append(xGyro);
+        sb.append("\",\"");
+        sb.append(yGyro);
+        sb.append("\",\"");
+        sb.append(zGyro);
+        sb.append("\",\"");
+        sb.append(luminosidade);
+        sb.append("\"");
+        return sb.toString();
     }
 
     public boolean isComplete(){
@@ -51,6 +84,9 @@ public class Registo {
             return false;
         }
         if (luminosidade == null) {
+            return false;
+        }
+        if (activity == null) {
             return false;
         }
         return true;
@@ -93,5 +129,12 @@ public class Registo {
 
     public void setLuminosidade(Float luminosidade) {
         this.luminosidade = luminosidade;
+    }
+
+    public String getActivity() {
+        return activity;
+    }
+    public void setActivity(String activity) {
+        this.activity = activity;
     }
 }

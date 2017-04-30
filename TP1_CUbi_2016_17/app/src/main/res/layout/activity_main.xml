@@ -80,11 +80,11 @@
         tools:layout_constraintTop_creator="1" />
 
     <Button
-        android:id="@+id/Comecar"
+        android:id="@+id/Iniciar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="comecar"
-        android:text="Começar recolha"
+        android:onClick="iniciarRecolha"
+        android:text="Iniciar recolha"
         app:layout_constraintLeft_toRightOf="@+id/Conduzir"
         app:layout_constraintRight_toRightOf="@+id/Conduzir"
         app:layout_constraintTop_toBottomOf="@+id/Conduzir"
@@ -96,11 +96,11 @@
         android:id="@+id/Parar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="parar"
+        android:onClick="pararRecolha"
         android:text="Parar Recolha"
-        app:layout_constraintLeft_toRightOf="@+id/Comecar"
-        app:layout_constraintRight_toRightOf="@+id/Comecar"
-        app:layout_constraintTop_toBottomOf="@+id/Comecar"
+        app:layout_constraintLeft_toRightOf="@+id/Iniciar"
+        app:layout_constraintRight_toRightOf="@+id/Iniciar"
+        app:layout_constraintTop_toBottomOf="@+id/Iniciar"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1" />
@@ -117,15 +117,6 @@
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1" />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="saveFile"
-        android:text="Save File"
-        tools:layout_editor_absoluteX="60dp"
-        tools:layout_editor_absoluteY="215dp" />
 
     <TextView
         android:id="@+id/textView"
