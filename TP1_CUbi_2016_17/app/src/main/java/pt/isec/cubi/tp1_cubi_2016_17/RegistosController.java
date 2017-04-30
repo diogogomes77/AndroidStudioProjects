@@ -44,15 +44,16 @@ public class RegistosController {
 
     public void setRegisto(Registo registo){
         reg = registo;
+        /*
         saveRegisto.println(reg.toString());
         regIndex++;
         reg = new Registo();
-        /*
+        */
         if (reg.isComplete()) {
             saveRegisto.println(reg.toString());
             regIndex++;
             reg = new Registo();
-        }*/
+        }
     }
     public String startSaving() {
        // String result ="Trying to Save...\n";

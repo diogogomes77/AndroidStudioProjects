@@ -57,6 +57,7 @@ public class Registo {
 
     public boolean isComplete(){
 
+        /*
         if (lat == null) {
             return false;
         }
@@ -65,7 +66,7 @@ public class Registo {
         }
         if (alt == null) {
             return false;
-        }
+        }*/
         if (xAcc == null) {
             return false;
         }
@@ -75,6 +76,7 @@ public class Registo {
         if (zAcc == null) {
             return false;
         }
+        /*
         if (xGyro == null) {
             return false;
         }
@@ -83,7 +85,7 @@ public class Registo {
         }
         if (zGyro == null) {
             return false;
-        }
+        }*/
         if (luminosidade == null) {
             return false;
         }
