@@ -102,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
     String Angulo;
 
     private long lastUpdate = 0;
+    private long lastUpdateGyro = 0;
+    private long lastUpdateLumi = 0;
     float[] gravity;
 
     @Override
@@ -222,10 +224,19 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSensorChanged(SensorEvent event) {
-                xGyro = event.values[0];
-                yGyro = event.values[1];
-                zGyro = event.values[2];
-                tvgyr.setText("Giroscopio X: " + xGyro + " Y: " + yGyro + " Z: " + zGyro);
+
+                long curTime = System.currentTimeMillis();
+
+                if ((curTime - lastUpdateGyro) > 1000) {
+                    long diffTime = (curTime - lastUpdateGyro);
+                    lastUpdateGyro = curTime;
+
+                    xGyro = event.values[0];
+                    yGyro = event.values[1];
+                    zGyro = event.values[2];
+                    tvgyr.setText("Giroscopio X: " + xGyro + " Y: " + yGyro + " Z: " + zGyro);
+                }
+
             }
         };
 
@@ -236,8 +247,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSensorChanged(SensorEvent event) {
-                luminosidade = event.values[0];
-                tvlum.setText("Luminosidade: " + luminosidade);
+
+                long curTime = System.currentTimeMillis();
+
+                if ((curTime - lastUpdateLumi) > 1000) {
+                    long diffTime = (curTime - lastUpdateLumi);
+                    lastUpdateLumi = curTime;
+
+                    luminosidade = event.values[0];
+                    tvlum.setText("Luminosidade: " + luminosidade);
+                }
             }
         };
     }
