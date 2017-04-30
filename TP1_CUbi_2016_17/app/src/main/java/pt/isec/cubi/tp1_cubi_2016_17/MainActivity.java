@@ -23,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 
 
@@ -164,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
 
                 calculate();
 
-                analisar();
+                analisarMovimento();
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -207,9 +206,10 @@ public class MainActivity extends AppCompatActivity {
                     tv.append(".");
 
                     tvacc.setText("X: " + xAcc + " Y: " + yAcc + " Z: " + zAcc);
+                    analisarMovimento();
                 }
 
-                analisar();
+
             }
         };
 
@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
                     mSensorManager.registerListener(listenerAcel, acel, SensorManager.SENSOR_DELAY_NORMAL);
                     mSensorManager.registerListener(listenerGyro, gyro, SensorManager.SENSOR_DELAY_NORMAL);
                     mSensorManager.registerListener(listenerLumi, lumi, SensorManager.SENSOR_DELAY_NORMAL);
-                    analisar();
+                    analisarMovimento();
 
                 } else {
                     tv.append("ERRO: permissoes GPS\n");
@@ -360,9 +360,7 @@ public class MainActivity extends AppCompatActivity {
         else if(distance > 10) {
             movimento = "Conduzir";
         }
-        Registo reg = regController.getRegisto();
-        reg.setActivity(movimento.concat(" ").concat(Angulo));
-        regController.setRegisto(reg);
+
     }
 
     public void insere(double la,double lo,double al){
@@ -388,7 +386,7 @@ public class MainActivity extends AppCompatActivity {
         d[0]=new Date();
     }
 
-    public void analisar(){
+    public void analisarMovimento(){
         if(Angulo.equals("Subir") && movimento.equals("Andar")){
             andar.setChecked(false);
             correr.setChecked(false);
@@ -424,6 +422,9 @@ public class MainActivity extends AppCompatActivity {
             descer.setChecked(false);
             conduzir.setChecked(true);
         }
+        Registo reg = regController.getRegisto();
+        reg.setActivity(movimento+" "+Angulo);
+        regController.setRegisto(reg);
     }
 
     private boolean requestGPSPermission(Activity context) {

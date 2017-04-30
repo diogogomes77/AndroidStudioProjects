@@ -49,6 +49,8 @@ public class Registo {
         sb.append(String.valueOf(zGyro));
         sb.append(",");
         sb.append(String.valueOf(luminosidade));
+        sb.append(",");
+        sb.append(activity);
 
         return sb.toString();
     }
