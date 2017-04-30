@@ -159,8 +159,6 @@ public class MainActivity extends AppCompatActivity {
         movimento="Andar";
         Angulo="Plano";
 
-        analisar();
-
         locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 insere(location.getLatitude(),location.getLongitude(),location.getAltitude());
@@ -297,6 +295,7 @@ public class MainActivity extends AppCompatActivity {
         mSensorManager.registerListener(listenerAcel, acel, SensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(listenerGyro, gyro, SensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(listenerLumi, lumi, SensorManager.SENSOR_DELAY_NORMAL);
+        analisar();
     }
 
     public void parar(View view) {
@@ -304,6 +303,17 @@ public class MainActivity extends AppCompatActivity {
         mSensorManager.unregisterListener(listenerAcel);
         mSensorManager.unregisterListener(listenerGyro);
         mSensorManager.unregisterListener(listenerLumi);
+        andar.setChecked(false);
+        correr.setChecked(false);
+        subir.setChecked(false);
+        descer.setChecked(false);
+        conduzir.setChecked(false);
+        tvlat.setText("");
+        tvlon.setText("");
+        tvalt.setText("");
+        tvacc.setText("");
+        tvgyr.setText("");
+        tvlum.setText("");
     }
 
     public void calculate(){
