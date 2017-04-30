@@ -292,6 +292,12 @@ public class MainActivity extends AppCompatActivity {
                     mSensorManager.registerListener(listenerAcel, acel, SensorManager.SENSOR_DELAY_NORMAL);
                     mSensorManager.registerListener(listenerGyro, gyro, SensorManager.SENSOR_DELAY_NORMAL);
                     mSensorManager.registerListener(listenerLumi, lumi, SensorManager.SENSOR_DELAY_NORMAL);
+                    analisar();
+                    try {
+                        regController.startSaving();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     recolhaIniciada = true;
                 } else {
                     // TODO
@@ -300,7 +306,6 @@ public class MainActivity extends AppCompatActivity {
                 // TODO
             }
         }
-<<<<<<< HEAD
     }
 
     public void pararRecolha(View view) {
@@ -312,12 +317,6 @@ public class MainActivity extends AppCompatActivity {
             regController.stopSaving();
             recolhaIniciada = false;
         }
-=======
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
-        mSensorManager.registerListener(listenerAcel, acel, SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(listenerGyro, gyro, SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(listenerLumi, lumi, SensorManager.SENSOR_DELAY_NORMAL);
-        analisar();
     }
 
     public void parar(View view) {
@@ -336,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
         tvacc.setText("");
         tvgyr.setText("");
         tvlum.setText("");
->>>>>>> 29982df21b80cd22d5b2fe48cc7459d8c067fbb7
+        regController.stopSaving();
     }
 
     public void calculate(){
