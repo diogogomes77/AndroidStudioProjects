@@ -5,59 +5,117 @@ import java.util.Date;
 
 
 public class Registo {
-    double lat;
-    double lon;
-    double alt;
-    long timestamp;
-    float xAcc;
-    float yAcc;
-    float zAcc;
-    float xGyro;
-    float yGyro;
-    float zGyro;
-    float luminosidade;
+    private Double lat;
+    private Double lon;
+    private Double alt;
+    private long timestamp;
+    private Float xAcc;
+    private Float yAcc;
+    private Float zAcc;
+    private Float xGyro;
+    private Float yGyro;
+    private Float zGyro;
+    private  Float luminosidade;
+    boolean complete;
 
-    public Registo() {
+    private Registo instance = null;
+
+    public Registo () {
         this.timestamp = new Date().getTime();
+        complete = false;
     }
 
-    public void setLat(double lat) {
+    public Registo getInstance(){
+        if (instance == null) {
+            instance = new Registo();
+        }
+        return instance;
+    }
+
+    public boolean isComplete(){
+
+        if (lat == null) {
+            return false;
+        }
+        if (lon == null) {
+            return false;
+        }
+        if (alt == null) {
+            return false;
+        }
+
+        if (xAcc == null) {
+            return false;
+        }
+        if (yAcc == null) {
+            return false;
+        }
+        if (zAcc == null) {
+            return false;
+        }
+        if (xGyro == null) {
+            return false;
+        }
+        if (yGyro == null) {
+            return false;
+        }
+        if (zGyro == null) {
+            return false;
+        }
+        if (luminosidade == null) {
+            return false;
+        }
+
+        // Save csv
+        return true;
+    }
+    public void setLat(Double lat) {
         this.lat = lat;
+
     }
 
-    public void setLon(double lon) {
+    public void setLon(Double lon) {
         this.lon = lon;
+
     }
 
-    public void setAlt(double alt) {
+    public void setAlt(Double alt) {
         this.alt = alt;
+
     }
 
-    public void setxAcc(float xAcc) {
+    public void setxAcc(Float xAcc) {
         this.xAcc = xAcc;
+
     }
 
-    public void setyAcc(float yAcc) {
+    public void setyAcc(Float yAcc) {
         this.yAcc = yAcc;
+
     }
 
-    public void setzAcc(float zAcc) {
+    public void setzAcc(Float zAcc) {
         this.zAcc = zAcc;
+
     }
 
-    public void setxGyro(float xGyro) {
+    public void setxGyro(Float xGyro) {
         this.xGyro = xGyro;
+
     }
 
-    public void setyGyro(float yGyro) {
+    public void setyGyro(Float yGyro) {
         this.yGyro = yGyro;
+
     }
 
-    public void setzGyro(float zGyro) {
+    public void setzGyro(Float zGyro) {
         this.zGyro = zGyro;
+ ;
     }
 
-    public void setLuminosidade(float luminosidade) {
+    public void setLuminosidade(Float luminosidade) {
         this.luminosidade = luminosidade;
+
     }
 }

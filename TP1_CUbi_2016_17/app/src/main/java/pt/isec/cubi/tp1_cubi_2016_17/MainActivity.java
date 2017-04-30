@@ -34,6 +34,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
+import java.util.List;
 
 
 import com.jcraft.jsch.Channel;
@@ -105,11 +106,14 @@ public class MainActivity extends AppCompatActivity {
     private long lastUpdateGyro = 0;
     private long lastUpdateLumi = 0;
     float[] gravity;
+    RegistosController regController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        regController = new RegistosController();
+
         tv = (TextView) findViewById(R.id.textView);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -172,7 +176,11 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     Angulo="Plano";
                 }
-
+                registocsv.setAlt(alt[0]);
+                registocsv.setLat(lat[0]);
+                registocsv.setLon(lon[0]);
+                if (registocsv.isComplete())
+                    registocsv = new Registo();
                 calculate();
 
                 analisar();
@@ -210,6 +218,14 @@ public class MainActivity extends AppCompatActivity {
                     yAcc = event.values[1] - gravity[1];
                     zAcc = event.values[2] - gravity[2];
 
+                    registocsv.setxAcc(xAcc);
+                    registocsv.setyAcc(yAcc);
+                    registocsv.setzAcc(zAcc);
+                    if (registocsv.isComplete()) {
+                        registos.add(registocsv);
+                        registocsv = new Registo();
+                    }
+
                     tvacc.setText("X: " + xAcc + " Y: " + yAcc + " Z: " + zAcc);
                 }
 
@@ -234,6 +250,13 @@ public class MainActivity extends AppCompatActivity {
                     xGyro = event.values[0];
                     yGyro = event.values[1];
                     zGyro = event.values[2];
+
+                    registocsv.setxGyro(xGyro);
+                    registocsv.setyGyro(yGyro);
+                    registocsv.setzGyro(zGyro);
+                    if (registocsv.isComplete())
+                        registocsv = new Registo();
+
                     tvgyr.setText("Giroscopio X: " + xGyro + " Y: " + yGyro + " Z: " + zGyro);
                 }
 
@@ -255,6 +278,8 @@ public class MainActivity extends AppCompatActivity {
                     lastUpdateLumi = curTime;
 
                     luminosidade = event.values[0];
+
+                    registocsv.setLuminosidade(luminosidade);
                     tvlum.setText("Luminosidade: " + luminosidade);
                 }
             }
