@@ -157,8 +157,6 @@ public class MainActivity extends AppCompatActivity {
         movimento="Andar";
         Angulo="Plano";
 
-        analisar();
-
         locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 insere(location.getLatitude(),location.getLongitude(),location.getAltitude());
@@ -302,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
                 // TODO
             }
         }
+<<<<<<< HEAD
     }
 
     public void pararRecolha(View view) {
@@ -313,6 +312,31 @@ public class MainActivity extends AppCompatActivity {
             regController.stopSaving();
             recolhaIniciada = false;
         }
+=======
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
+        mSensorManager.registerListener(listenerAcel, acel, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(listenerGyro, gyro, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(listenerLumi, lumi, SensorManager.SENSOR_DELAY_NORMAL);
+        analisar();
+    }
+
+    public void parar(View view) {
+        locationManager.removeUpdates(locationListener);
+        mSensorManager.unregisterListener(listenerAcel);
+        mSensorManager.unregisterListener(listenerGyro);
+        mSensorManager.unregisterListener(listenerLumi);
+        andar.setChecked(false);
+        correr.setChecked(false);
+        subir.setChecked(false);
+        descer.setChecked(false);
+        conduzir.setChecked(false);
+        tvlat.setText("");
+        tvlon.setText("");
+        tvalt.setText("");
+        tvacc.setText("");
+        tvgyr.setText("");
+        tvlum.setText("");
+>>>>>>> 29982df21b80cd22d5b2fe48cc7459d8c067fbb7
     }
 
     public void calculate(){
