@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE = 98;
     public TextView tv;
     public static final int REQUEST_WRITE_STORAGE = 112;
-    private String filename = "a21260825.dat";
+    private String filename = "a21260825_.dat";
     private  File path;
     private File dir;
     private String folder = "/cubi1617";

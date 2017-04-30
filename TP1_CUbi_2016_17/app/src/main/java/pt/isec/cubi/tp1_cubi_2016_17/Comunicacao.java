@@ -50,11 +50,7 @@ public class Comunicacao extends AsyncTask<String, Integer, String> {
             ChannelSftp sftp = (ChannelSftp) channel;
 
            // sftp.cd("data");
-            // If you need to display the progress of the upload, read how to do it in the end of the article
-
-            // use the put method , if you are using android remember to remove "file://" and use only the relative path
-            //sftp.put(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)+"/cubi1617/a21260825.dat", "a21260825.dat");
-            sftp.put(remoteFile);
+            sftp.put(localFile,remoteFile);
             channel.disconnect();
             session.disconnect();
         } catch (JSchException e) {

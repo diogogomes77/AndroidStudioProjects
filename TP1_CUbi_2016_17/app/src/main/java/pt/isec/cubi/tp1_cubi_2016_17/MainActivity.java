@@ -11,39 +11,20 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Date;
-import java.util.List;
-
-
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
-
 
 
 public class MainActivity extends AppCompatActivity {
@@ -109,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        regController = RegistosController.getInstance();
+       // regController = RegistosController.getInstance();
+        regController = new RegistosController();
         config =  Configuracao.getInstance();
 
         tv = (TextView) findViewById(R.id.textView);
@@ -178,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 reg.setLat(lat[0]);
                 reg.setLon(lon[0]);
                 regController.setRegisto(reg);
+                tv.append(".");
 
                 calculate();
 
@@ -221,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
                     reg.setyAcc(yAcc);
                     reg.setzAcc(zAcc);
                     regController.setRegisto(reg);
+                    tv.append(".");
 
                     tvacc.setText("X: " + xAcc + " Y: " + yAcc + " Z: " + zAcc);
                 }
@@ -252,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
                     reg.setyGyro(yGyro);
                     reg.setzGyro(zGyro);
                     regController.setRegisto(reg);
-
+                    tv.append(".");
                     tvgyr.setText("Giroscopio X: " + xGyro + " Y: " + yGyro + " Z: " + zGyro);
                 }
 
@@ -278,6 +262,7 @@ public class MainActivity extends AppCompatActivity {
                     Registo reg = regController.getRegisto();
                     reg.setLuminosidade(luminosidade);
                     regController.setRegisto(reg);
+                    tv.append(".");
 
                     tvlum.setText("Luminosidade: " + luminosidade);
                 }
@@ -286,36 +271,45 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void iniciarRecolha(View view) {
+        //tv.setText("A Iniciar Recolha...\n");
         if (!recolhaIniciada) {
+            recolhaIniciada = true;
+           // tv.append("Recolha iniciada\n");
             if (requestFilePermission(MainActivity.this)) {
                 if (requestGPSPermission(MainActivity.this)) {
+
+             //       tv.append("Iniciar ficheiro\n");
+                    String result = regController.startSaving();
+                    tv.append(result);
                     mSensorManager.registerListener(listenerAcel, acel, SensorManager.SENSOR_DELAY_NORMAL);
                     mSensorManager.registerListener(listenerGyro, gyro, SensorManager.SENSOR_DELAY_NORMAL);
                     mSensorManager.registerListener(listenerLumi, lumi, SensorManager.SENSOR_DELAY_NORMAL);
                     analisar();
-                    try {
-                        regController.startSaving();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    recolhaIniciada = true;
+
                 } else {
-                    // TODO
+                    tv.append("ERRO: permissoes GPS\n");
                 }
             } else {
-                // TODO
+                tv.append("ERRO permissoes de ficheiro\n");
             }
+        }else{
+            tv.append("Recolha nao iniciada\n");
         }
     }
 
     public void pararRecolha(View view) {
+       // tv.append("A Parar Recolha...\n");
         if (recolhaIniciada) {
+            recolhaIniciada = false;
+         //   tv.append("Recolha Parada\n");
             locationManager.removeUpdates(locationListener);
             mSensorManager.unregisterListener(listenerAcel);
             mSensorManager.unregisterListener(listenerGyro);
             mSensorManager.unregisterListener(listenerLumi);
-            regController.stopSaving();
-            recolhaIniciada = false;
+            String result = regController.stopSaving();
+            tv.append(result);
+        }else {
+            tv.append("ERRO: Recolha nao Parada\n");
         }
     }
 
@@ -455,11 +449,11 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     REQUEST_WRITE_STORAGE);
         } else {
-            // You are allowed to write external storage:
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + config.getFolder();
+            String path = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath() + config.getFolder();
             File storageDir = new File(path);
+            //tv.append("Criar pastas "+storageDir.getAbsolutePath()+"\n");
             if (!storageDir.exists() && !storageDir.mkdirs()) {
-                // TODO
+                tv.append("ERRO: nao criou pastas\n");
             }
         }
         return hasPermission;
@@ -473,7 +467,6 @@ public class MainActivity extends AppCompatActivity {
             case REQUEST_WRITE_STORAGE: {
                 if (grantResults.length > 0 && grantResults[0] ==  PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "The app was allowed to write to your storage!", Toast.LENGTH_LONG).show();
-                    // Reload the activity with permission granted or use the features what required the permission
                 } else {
                     Toast.makeText(this, "The app was not allowed to write to your storage. Hence, it cannot function properly. Please consider granting it this permission", Toast.LENGTH_LONG).show();
                 }
@@ -482,27 +475,16 @@ public class MainActivity extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // location-related task you need to do.
                     if (ContextCompat.checkSelfPermission(this,
                             Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
-
-                        //Permission was granted, do your thing!
                     }
 
                 } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                     Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
                 }
                 return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
@@ -520,7 +502,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
             }
         }
-        regController.enviarCSV();
+        regController.enviarRegistos();
         //new LongOperation().execute();
     }
 

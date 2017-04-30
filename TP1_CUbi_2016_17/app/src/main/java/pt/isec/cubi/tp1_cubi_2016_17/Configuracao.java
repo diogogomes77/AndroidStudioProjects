@@ -8,7 +8,7 @@ import java.io.File;
 public class Configuracao {
     private String filename = "DGJB_TP1";
     private String extencao = ".csv";
-    private String folder = "/cubi1617";
+    private String folder = "/cubi1617_TP1";
     private String host = "kenobi.dei.uc.pt";
     private String user = "cubistudent";
     private String passw = "mis_cub_2017";

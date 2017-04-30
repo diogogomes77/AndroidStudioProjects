@@ -28,29 +28,28 @@ public class Registo {
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("\"");
-        sb.append(lat);
-        sb.append("\",\"");
-        sb.append(lon);
-        sb.append("\",\"");
-        sb.append(alt);
-        sb.append("\",\"");
-        sb.append(timestamp);
-        sb.append("\",\"");
-        sb.append(xAcc);
-        sb.append("\",\"");
-        sb.append(yAcc);
-        sb.append("\",\"");
-        sb.append(zAcc);
-        sb.append("\",\"");
-        sb.append(xGyro);
-        sb.append("\",\"");
-        sb.append(yGyro);
-        sb.append("\",\"");
-        sb.append(zGyro);
-        sb.append("\",\"");
-        sb.append(luminosidade);
-        sb.append("\"");
+        sb.append(String.valueOf(lat));
+        sb.append(",");
+        sb.append(String.valueOf(lon));
+        sb.append(",");
+        sb.append(String.valueOf(alt));
+        sb.append(",");
+        sb.append(String.valueOf(timestamp));
+        sb.append(",");
+        sb.append(String.valueOf(xAcc));
+        sb.append(",");
+        sb.append(String.valueOf(yAcc));
+        sb.append(",");
+        sb.append(String.valueOf(zAcc));
+        sb.append(",");
+        sb.append(String.valueOf(xGyro));
+        sb.append(",");
+        sb.append(String.valueOf(yGyro));
+        sb.append(",");
+        sb.append(String.valueOf(zGyro));
+        sb.append(",");
+        sb.append(String.valueOf(luminosidade));
+
         return sb.toString();
     }
 

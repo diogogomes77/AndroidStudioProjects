@@ -17,6 +17,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -40,10 +41,11 @@ public class RegistosController {
     private PrintWriter saveRegisto;
     private boolean saving;
 
-    protected RegistosController() {
+    public RegistosController() {
         reg = new Registo();
         config = Configuracao.getInstance();
         regIndex = 0;
+        saving = false;
     }
 
     public static RegistosController getInstance() {
@@ -59,40 +61,77 @@ public class RegistosController {
 
     public void setRegisto(Registo registo){
         reg = registo;
+        saveRegisto.println(reg.toString());
+        regIndex++;
+        reg = new Registo();
+        /*
         if (reg.isComplete()) {
             saveRegisto.println(reg.toString());
             regIndex++;
             reg = new Registo();
-        }
+        }*/
     }
-    public void startSaving() throws IOException {
+    public String startSaving() {
+        String result ="Trying to Save...\n";
+
         if (!saving) {
-            checkExternalMedia();
+
+            result+=("Saving...\n");
+            result+=(checkExternalMedia());
             path = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
             dir = new File(path.getAbsolutePath() + config.getFolder());
             dir.mkdirs();
-            file = new File(dir, config.getFilename().concat(config.getExtencao()));
-            fw = new FileWriter(file, true);
-            bw = new BufferedWriter(fw);
-            saveRegisto = new PrintWriter(bw);
-
-            saveRegisto.println(reg.csvHeader());
-        }
-    }
-    public void stopSaving() {
-        if (saving){
+            file = new File(dir, config.getFilename()+(config.getExtencao()));
             try {
+                // limpa o ficheiro
+                PrintWriter pw = new PrintWriter(file);
+                pw.close();
+
+                fw = new FileWriter(file, true);
+                result+=("ficheiro = "+file.getAbsolutePath()+"\n");
+                saving = true;
+
+                bw = new BufferedWriter(fw);
+               /* bw.write(reg.csvHeader());
+                bw.newLine();
                 bw.flush();
-                bw.close();
-                saving = false;
+                bw.close();*/
+
+                saveRegisto = new PrintWriter(bw);
+                saveRegisto.println(reg.csvHeader());
+
+
             } catch (IOException e) {
                 e.printStackTrace();
+                result+=("ERRO na criacao de ficheiro\n");
+                return result;
+            }
+
+        }else {
+            result+=("not Saving...\n");
+        }
+        return result;
+    }
+
+    public String stopSaving() {
+        String result ="Trying to stop saving\n";
+        if (saving){
+            result+=("Stop Saving...\n");
+            try {
+               // bw.flush();
+                bw.close();
+                saving = false;
+                result+=("Saving Stoped\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+                result+=("ERRO: Saving not Stoped\n");
             }
             regIndex = 0;
         }
+        return result;
     }
 
-    private void checkExternalMedia(){
+    private String checkExternalMedia(){
         boolean mExternalStorageAvailable = false;
         boolean mExternalStorageWriteable = false;
         String state = Environment.getExternalStorageState();
@@ -109,17 +148,14 @@ public class RegistosController {
             mExternalStorageAvailable = mExternalStorageWriteable = false;
             // TODO
         }
-       // tv.append("\n\nExternal Media: readable="
-       //         +mExternalStorageAvailable+" writable="+mExternalStorageWriteable);
+       return "\n\nExternal Media: readable="
+                +mExternalStorageAvailable+" writable="+mExternalStorageWriteable+"\n";
     }
 
-    public void enviarCSV(){
-        String localFile = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)+"/cubi1617/a21260825.dat";
-       // String localFile = file.getAbsolutePath();
-        Format formatter = new SimpleDateFormat("ddMMYYYYhhmmss");
-
-        String remoteFile = config.getFilename().concat("_").concat(formatter.format(new Date().getTime())).concat(config.getExtencao());
-       // String remoteFile ="ok";
+    public void enviarRegistos(){
+       String localFile = file.getAbsolutePath();
+        Format formatter = new SimpleDateFormat("ddMMyyhhmmss");
+       String remoteFile = config.getFilename().concat("_").concat(formatter.format(new Date().getTime())).concat(config.getExtencao());
         new Comunicacao().execute(config.getHost(),config.getUser(),config.getPassw(),localFile,remoteFile);
     }
 }
