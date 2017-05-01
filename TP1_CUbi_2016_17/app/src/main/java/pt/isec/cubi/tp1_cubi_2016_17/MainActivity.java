@@ -120,12 +120,6 @@ public class MainActivity extends AppCompatActivity {
         tvgyr.setText("");
         tvlum.setText("");
 
-        andar.setClickable(false);
-        correr.setClickable(false);
-        subir.setClickable(false);
-        descer.setClickable(false);
-        conduzir.setClickable(false);
-
         lat = new double[5];
         lon = new double[5];
         alt = new double[5];
@@ -135,8 +129,8 @@ public class MainActivity extends AppCompatActivity {
 
         gravity = new float[]{0, 0, 0};
 
-        movimento="Andar";
-        Angulo="Plano";
+        Angulo="";
+        movimento="";
 
         locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
@@ -272,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void iniciarRecolha(View view) {
         //tv.setText("A Iniciar Recolha...\n");
-        if (!recolhaIniciada) {
+        if (!recolhaIniciada && (andar.isChecked() || correr.isChecked() || subir.isChecked() || descer.isChecked() || conduzir.isChecked())) {
             recolhaIniciada = true;
            // tv.append("Recolha iniciada\n");
             if (requestFilePermission(MainActivity.this)) {
@@ -311,25 +305,6 @@ public class MainActivity extends AppCompatActivity {
         }else {
             tv.append("ERRO: Recolha nao Parada\n");
         }
-    }
-
-    public void parar(View view) {
-        locationManager.removeUpdates(locationListener);
-        mSensorManager.unregisterListener(listenerAcel);
-        mSensorManager.unregisterListener(listenerGyro);
-        mSensorManager.unregisterListener(listenerLumi);
-        andar.setChecked(false);
-        correr.setChecked(false);
-        subir.setChecked(false);
-        descer.setChecked(false);
-        conduzir.setChecked(false);
-        tvlat.setText("");
-        tvlon.setText("");
-        tvalt.setText("");
-        tvacc.setText("");
-        tvgyr.setText("");
-        tvlum.setText("");
-        regController.stopSaving();
     }
 
     public void calculate(){
