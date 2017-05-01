@@ -24,7 +24,8 @@
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1" />
+        tools:layout_constraintTop_creator="1"
+        android:onClick="onRadioButtonClicked"/>
 
     <RadioButton
         android:id="@+id/Correr"
@@ -37,7 +38,8 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintTop_creator="1" />
+        tools:layout_constraintTop_creator="1"
+        android:onClick="onRadioButtonClicked"/>
 
     <RadioButton
         android:id="@+id/DescerEscada"
@@ -50,7 +52,8 @@
         app:layout_constraintTop_toBottomOf="@+id/Correr"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1" />
+        tools:layout_constraintTop_creator="1"
+        android:onClick="onRadioButtonClicked"/>
 
     <RadioButton
         android:id="@+id/SubirEscada"
@@ -63,7 +66,8 @@
         app:layout_constraintTop_toBottomOf="@+id/DescerEscada"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1" />
+        tools:layout_constraintTop_creator="1"
+        android:onClick="onRadioButtonClicked"/>
 
     <RadioButton
         android:id="@+id/Conduzir"
@@ -77,7 +81,8 @@
         app:layout_constraintTop_toBottomOf="@+id/Sentar"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1" />
+        tools:layout_constraintTop_creator="1"
+        android:onClick="onRadioButtonClicked"/>
 
     <Button
         android:id="@+id/Iniciar"

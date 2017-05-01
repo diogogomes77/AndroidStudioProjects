@@ -264,6 +264,46 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    public void onRadioButtonClicked(View view) {
+        switch(view.getId()) {
+            case R.id.Andar:
+                andar.setChecked(true);
+                correr.setChecked(false);
+                subir.setChecked(false);
+                descer.setChecked(false);
+                conduzir.setChecked(false);
+                break;
+            case R.id.Correr:
+                andar.setChecked(false);
+                correr.setChecked(true);
+                subir.setChecked(false);
+                descer.setChecked(false);
+                conduzir.setChecked(false);
+                break;
+            case R.id.SubirEscada:
+                andar.setChecked(false);
+                correr.setChecked(false);
+                subir.setChecked(true);
+                descer.setChecked(false);
+                conduzir.setChecked(false);
+                break;
+            case R.id.DescerEscada:
+                andar.setChecked(false);
+                correr.setChecked(false);
+                subir.setChecked(false);
+                descer.setChecked(true);
+                conduzir.setChecked(false);
+                break;
+            case R.id.Conduzir:
+                andar.setChecked(false);
+                correr.setChecked(false);
+                subir.setChecked(false);
+                descer.setChecked(false);
+                conduzir.setChecked(true);
+                break;
+        }
+    }
+
     public void iniciarRecolha(View view) {
         //tv.setText("A Iniciar Recolha...\n");
         if (!recolhaIniciada && (andar.isChecked() || correr.isChecked() || subir.isChecked() || descer.isChecked() || conduzir.isChecked())) {
