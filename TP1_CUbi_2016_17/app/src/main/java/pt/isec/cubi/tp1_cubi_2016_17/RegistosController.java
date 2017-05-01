@@ -82,8 +82,9 @@ public class RegistosController {
                 bw.close();*/
 
                 saveRegisto = new PrintWriter(bw);
-                saveRegisto.println(reg.csvHeader());
-
+                if (file.length() == 0) {
+                    saveRegisto.println(reg.csvHeader());
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();
