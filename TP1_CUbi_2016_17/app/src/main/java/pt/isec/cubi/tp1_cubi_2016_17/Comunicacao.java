@@ -22,6 +22,8 @@ public class Comunicacao extends AsyncTask<Void, Integer, String> {
     private File file;
     private Configuracao configz;
 
+    private boolean transferenciaConcluida;
+
     public Comunicacao(File file,Configuracao config) {
         this.file = file;
         this.configz = config;
@@ -54,24 +56,30 @@ public class Comunicacao extends AsyncTask<Void, Integer, String> {
             sftp.put(localFile,remoteFile);
             channel.disconnect();
             session.disconnect();
+            transferenciaConcluida = true;
         } catch (JSchException e) {
             System.out.println(e.getMessage().toString());
             e.printStackTrace();
+            transferenciaConcluida = false;
         } catch (SftpException e) {
             System.out.println(e.getMessage().toString());
             e.printStackTrace();
+            transferenciaConcluida = false;
         }
         return "Terminado";
     }
     @Override
     protected void onPostExecute(String result) {
-       PrintWriter pw = null;
-        try {
-            pw = new PrintWriter(file);
-        } catch (FileNotFoundException e) {
-            // TODO
+        if (transferenciaConcluida){
+            PrintWriter pw = null;
+            try {
+                pw = new PrintWriter(file);
+            } catch (FileNotFoundException e) {
+                // TODO
+            }
+            pw.close();
         }
-        pw.close();
+
 
         Log.d("PostExecuted",result);
     }

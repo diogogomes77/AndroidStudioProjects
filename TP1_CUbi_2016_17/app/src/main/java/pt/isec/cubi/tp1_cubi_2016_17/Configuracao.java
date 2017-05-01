@@ -12,8 +12,11 @@ public class Configuracao {
     private String filename = "DGJB_TP1";
     private String extencao = ".csv";
     private String folder = "/cubi1617_TP1";
-    private String host = "kenobi.dei.uc.pt";
+    /*private String host = "kenobi.dei.uc.pt";
     private String user = "cubistudent";
+    private String passw = "mis_cub_2017";*/
+    private String host = "diogomes.com";
+    private String user = "diogo";
     private String passw = "mis_cub_2017";
     private String remoteFile;
     private Format formatter;
