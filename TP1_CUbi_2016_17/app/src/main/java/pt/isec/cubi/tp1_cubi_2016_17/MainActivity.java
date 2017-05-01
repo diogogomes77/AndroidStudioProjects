@@ -29,6 +29,7 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static final int MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE = 98;
+    public TextView tvAutores;
     public TextView tv;
     public TextView tvlat;
     public TextView tvlon;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     public TextView tvacc;
     public TextView tvgyr;
     public TextView tvlum;
+    public TextView tvAct;
     public static final int REQUEST_WRITE_STORAGE = 112;
     private Configuracao config;
 
@@ -93,6 +95,11 @@ public class MainActivity extends AppCompatActivity {
         regController = new RegistosController();
         config =  Configuracao.getInstance();
 
+        tvAutores = (TextView) findViewById(R.id.textView2);
+        tvAutores.setText("ISEC-CUbi 16/17\n");
+        tvAutores.append("Trabalho 1, realizado por:\n");
+        tvAutores.append("Diogo Gomes, a21260825@alunos.isec.pt\n");
+        tvAutores.append("João Bizarro, a21230141@@alunos.isec.pt\n");
         tv = (TextView) findViewById(R.id.textView);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -112,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         tvacc = (TextView) findViewById(R.id.textViewAcc);
         tvgyr = (TextView) findViewById(R.id.textViewGyro);
         tvlum = (TextView) findViewById(R.id.textViewLum);
+        tvAct = (TextView) findViewById(R.id.textView3);
 
         tvlat.setText("");
         tvlon.setText("");
@@ -138,7 +146,8 @@ public class MainActivity extends AppCompatActivity {
                 tvlat.setText("Latitude: " + lat[0]);
                 tvlon.setText("Longitude: " + lon[0]);
                 tvlat.setText("Altitude: " + alt[0]);
-                if(alt[0]>alt[1] && alt[1]>alt[2] && alt[2]>alt[3] && alt[3]>alt[4]){
+
+                /*if(alt[0]>alt[1] && alt[1]>alt[2] && alt[2]>alt[3] && alt[3]>alt[4]){
                     Angulo="Subir";
                 }
                 else if(alt[0]<alt[1] && alt[1]<alt[2] && alt[2]<alt[3] && alt[3]<alt[4]){
@@ -146,18 +155,18 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else{
                     Angulo="Plano";
-                }
+                }*/
 
                 Registo reg = regController.getRegisto();
                 reg.setAlt(alt[0]);
                 reg.setLat(lat[0]);
                 reg.setLon(lon[0]);
-                regController.setRegisto(reg);
-                tv.append(".");
+                tv.append(regController.setRegisto(reg));
 
-                calculate();
 
-                analisarMovimento();
+                //calculate();
+
+                //analisarMovimento();
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -196,11 +205,11 @@ public class MainActivity extends AppCompatActivity {
                     reg.setxAcc(xAcc);
                     reg.setyAcc(yAcc);
                     reg.setzAcc(zAcc);
-                    regController.setRegisto(reg);
-                    tv.append(".");
+                    tv.append(regController.setRegisto(reg));
 
-                    tvacc.setText("X: " + xAcc + " Y: " + yAcc + " Z: " + zAcc);
-                    analisarMovimento();
+
+                    tvacc.setText("Acc X: " + xAcc + " Y: " + yAcc + " Z: " + zAcc);
+                    //analisarMovimento();
                 }
 
 
@@ -229,8 +238,8 @@ public class MainActivity extends AppCompatActivity {
                     reg.setxGyro(xGyro);
                     reg.setyGyro(yGyro);
                     reg.setzGyro(zGyro);
-                    regController.setRegisto(reg);
-                    tv.append(".");
+                    tv.append(regController.setRegisto(reg));
+
                     tvgyr.setText("Giroscopio X: " + xGyro + " Y: " + yGyro + " Z: " + zGyro);
                 }
 
@@ -255,8 +264,8 @@ public class MainActivity extends AppCompatActivity {
 
                     Registo reg = regController.getRegisto();
                     reg.setLuminosidade(luminosidade);
-                    regController.setRegisto(reg);
-                    tv.append(".");
+                    tv.append(regController.setRegisto(reg));
+
 
                     tvlum.setText("Luminosidade: " + luminosidade);
                 }
@@ -267,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRadioButtonClicked(View view) {
         switch(view.getId()) {
             case R.id.Andar:
+                movimento="Andar";
                 andar.setChecked(true);
                 correr.setChecked(false);
                 subir.setChecked(false);
@@ -274,6 +284,7 @@ public class MainActivity extends AppCompatActivity {
                 conduzir.setChecked(false);
                 break;
             case R.id.Correr:
+                movimento="Correr";
                 andar.setChecked(false);
                 correr.setChecked(true);
                 subir.setChecked(false);
@@ -281,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
                 conduzir.setChecked(false);
                 break;
             case R.id.SubirEscada:
+                movimento="SubirEscada";
                 andar.setChecked(false);
                 correr.setChecked(false);
                 subir.setChecked(true);
@@ -288,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
                 conduzir.setChecked(false);
                 break;
             case R.id.DescerEscada:
+                movimento="DescerEscada";
                 andar.setChecked(false);
                 correr.setChecked(false);
                 subir.setChecked(false);
@@ -295,6 +308,7 @@ public class MainActivity extends AppCompatActivity {
                 conduzir.setChecked(false);
                 break;
             case R.id.Conduzir:
+                movimento="Conduzir";
                 andar.setChecked(false);
                 correr.setChecked(false);
                 subir.setChecked(false);
@@ -302,33 +316,48 @@ public class MainActivity extends AppCompatActivity {
                 conduzir.setChecked(true);
                 break;
         }
+        tvAct.setText(movimento);
+        if (recolhaIniciada) {
+            Registo reg = regController.getRegisto();
+            reg.setActivity(movimento);
+            tv.append(regController.setRegisto(reg));
+        }
     }
 
     public void iniciarRecolha(View view) {
         //tv.setText("A Iniciar Recolha...\n");
-        if (!recolhaIniciada && (andar.isChecked() || correr.isChecked() || subir.isChecked() || descer.isChecked() || conduzir.isChecked())) {
-            recolhaIniciada = true;
-           // tv.append("Recolha iniciada\n");
-            if (requestFilePermission(MainActivity.this)) {
-                if (requestGPSPermission(MainActivity.this)) {
+      // if (andar.isChecked() || correr.isChecked() || subir.isChecked() || descer.isChecked() || conduzir.isChecked()){
+       //     if (!recolhaIniciada) {
+        if (!recolhaIniciada && (andar.isChecked() || correr.isChecked() || subir.isChecked() || descer.isChecked() || conduzir.isChecked()))   {
+                recolhaIniciada = true;
+                // tv.append("Recolha iniciada\n");
+                if (requestFilePermission(MainActivity.this)) {
+                    if (requestGPSPermission(MainActivity.this)) {
 
-             //       tv.append("Iniciar ficheiro\n");
-                    String result = regController.startSaving();
-                    tv.append(result);
-                    mSensorManager.registerListener(listenerAcel, acel, SensorManager.SENSOR_DELAY_NORMAL);
-                    mSensorManager.registerListener(listenerGyro, gyro, SensorManager.SENSOR_DELAY_NORMAL);
-                    mSensorManager.registerListener(listenerLumi, lumi, SensorManager.SENSOR_DELAY_NORMAL);
-                    analisarMovimento();
+                        //       tv.append("Iniciar ficheiro\n");
+                        String result = regController.startSaving();
+                        tv.setText(result);
+                        Registo reg = regController.getRegisto();
+                        reg.setActivity(movimento);
+                        tv.append(regController.setRegisto(reg));
+                        mSensorManager.registerListener(listenerAcel, acel, SensorManager.SENSOR_DELAY_NORMAL);
+                        mSensorManager.registerListener(listenerGyro, gyro, SensorManager.SENSOR_DELAY_NORMAL);
+                        mSensorManager.registerListener(listenerLumi, lumi, SensorManager.SENSOR_DELAY_NORMAL);
+                        //analisarMovimento();
 
+                    } else {
+                        tv.append("ERRO: permissoes GPS\n");
+                    }
                 } else {
-                    tv.append("ERRO: permissoes GPS\n");
+                    tv.append("ERRO permissoes de ficheiro\n");
                 }
             } else {
-                tv.append("ERRO permissoes de ficheiro\n");
+                Toast.makeText(this, "Recolha em curso...", Toast.LENGTH_LONG).show();
+               // tv.setText("Recolha nao iniciada\n");
             }
-        }else{
-            tv.append("Recolha nao iniciada\n");
-        }
+      //  }else {
+      //     tv.append("Tem de escolher uma atividade\n");
+      // }
     }
 
     public void pararRecolha(View view) {
@@ -341,12 +370,35 @@ public class MainActivity extends AppCompatActivity {
             mSensorManager.unregisterListener(listenerGyro);
             mSensorManager.unregisterListener(listenerLumi);
             String result = regController.stopSaving();
-            tv.append(result);
+            tv.setText(result);
         }else {
-            tv.append("ERRO: Recolha nao Parada\n");
+            Toast.makeText(this, "Não ha Recolha em curso...", Toast.LENGTH_LONG).show();
+            //tv.setText("ERRO: Recolha nao Parada\n");
         }
     }
+    public void insere(double la,double lo,double al){
+        lat[4]=lat[3];
+        lat[3]=lat[2];
+        lat[2]=lat[1];
+        lat[1]=lat[0];
+        lat[0]=la;
 
+        lon[4]=lon[3];
+        lon[3]=lon[2];
+        lon[2]=lon[1];
+        lon[1]=lon[0];
+        lon[0]=lo;
+
+        alt[4]=alt[3];
+        alt[3]=alt[2];
+        alt[2]=alt[1];
+        alt[1]=alt[0];
+        alt[0]=al;
+
+        d[1]=d[0];
+        d[0]=new Date();
+    }
+/*
     public void calculate(){
         final int R = 6371;
 
@@ -378,28 +430,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void insere(double la,double lo,double al){
-        lat[4]=lat[3];
-        lat[3]=lat[2];
-        lat[2]=lat[1];
-        lat[1]=lat[0];
-        lat[0]=la;
 
-        lon[4]=lon[3];
-        lon[3]=lon[2];
-        lon[2]=lon[1];
-        lon[1]=lon[0];
-        lon[0]=lo;
-
-        alt[4]=alt[3];
-        alt[3]=alt[2];
-        alt[2]=alt[1];
-        alt[1]=alt[0];
-        alt[0]=al;
-
-        d[1]=d[0];
-        d[0]=new Date();
-    }
 
     public void analisarMovimento(){
         if(Angulo.equals("Subir") && movimento.equals("Andar")){
@@ -439,9 +470,9 @@ public class MainActivity extends AppCompatActivity {
         }
         Registo reg = regController.getRegisto();
         reg.setActivity(movimento+" "+Angulo);
-        regController.setRegisto(reg);
+        tv.append(regController.setRegisto(reg));
     }
-
+*/
     private boolean requestGPSPermission(Activity context) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
@@ -518,7 +549,12 @@ public class MainActivity extends AppCompatActivity {
                     return;
             }
         }
-        regController.enviarRegistos();
+        if (regController.ficheiroComRegistos()){
+            regController.enviarRegistos();
+        }else{
+            tv.append("Nao ha registos para enviar\n");
+        }
+
         //new LongOperation().execute();
     }
 

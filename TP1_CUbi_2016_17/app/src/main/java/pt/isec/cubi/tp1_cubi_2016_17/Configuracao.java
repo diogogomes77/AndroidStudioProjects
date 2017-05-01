@@ -4,6 +4,9 @@ package pt.isec.cubi.tp1_cubi_2016_17;
 import android.widget.RadioButton;
 
 import java.io.File;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Configuracao {
     private String filename = "DGJB_TP1";
@@ -12,11 +15,23 @@ public class Configuracao {
     private String host = "kenobi.dei.uc.pt";
     private String user = "cubistudent";
     private String passw = "mis_cub_2017";
+    private String remoteFile;
+    private Format formatter;
 
     private static Configuracao instance = null;
 
     protected Configuracao() {
+        setRemoteFile();
 
+    }
+
+    public String getRemoteFile() {
+        return remoteFile;
+    }
+
+    private void setRemoteFile(){
+        formatter = new SimpleDateFormat("ddMMyyhhmmss");
+        remoteFile = filename.concat("_").concat(formatter.format(new Date().getTime())).concat(extencao);
     }
 
     public String getExtencao() {
@@ -25,6 +40,7 @@ public class Configuracao {
 
     public void setExtencao(String extencao) {
         this.extencao = extencao;
+        setRemoteFile();
     }
 
     public static Configuracao getInstance() {
@@ -40,6 +56,7 @@ public class Configuracao {
 
     public void setFilename(String filename) {
         this.filename = filename;
+        setRemoteFile();
     }
 
     public String getFolder() {

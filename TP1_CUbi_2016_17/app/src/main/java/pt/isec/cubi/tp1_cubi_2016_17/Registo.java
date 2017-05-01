@@ -122,9 +122,7 @@ public class Registo {
         this.xGyro = xGyro;
     }
 
-    public void setyGyro(Float yGyro) {
-        this.yGyro = yGyro;
-    }
+    public void setyGyro(Float yGyro) {this.yGyro = yGyro;}
 
     public void setzGyro(Float zGyro) {
         this.zGyro = zGyro;
@@ -134,10 +132,13 @@ public class Registo {
         this.luminosidade = luminosidade;
     }
 
-    public String getActivity() {
-        return activity;
-    }
     public void setActivity(String activity) {
         this.activity = activity;
     }
+
+    public String getActivity() {
+        return activity;
+    }
+
+
 }

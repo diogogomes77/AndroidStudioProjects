@@ -16,22 +16,25 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 
-public class Comunicacao extends AsyncTask<String, Integer, String> {
+public class Comunicacao extends AsyncTask<Void, Integer, String> {
+
 
     private File file;
+    private Configuracao configz;
 
-    public Comunicacao(File file) {
+    public Comunicacao(File file,Configuracao config) {
         this.file = file;
+        this.configz = config;
     }
 
     @Override
-    protected String doInBackground(String... params) {
+    protected String doInBackground(Void... params) {
         try {
-            String host = params[0];
-            String user = params[1];
-            String passwd = params[2];
-            String localFile = params[3];
-            String remoteFile = params[4];
+            String host = configz.getHost();
+            String user = configz.getUser();
+            String passwd = configz.getPassw();
+            String localFile = file.getAbsolutePath();
+            String remoteFile = configz.getRemoteFile();
             JSch ssh = new JSch();
             Session session = ssh.getSession(user, host, 22);
             // Remember that this is just for testing and we need a quick access, you can add an identity and known_hosts file to prevent
@@ -62,13 +65,14 @@ public class Comunicacao extends AsyncTask<String, Integer, String> {
     }
     @Override
     protected void onPostExecute(String result) {
-        PrintWriter pw = null;
+       PrintWriter pw = null;
         try {
             pw = new PrintWriter(file);
         } catch (FileNotFoundException e) {
             // TODO
         }
         pw.close();
+
         Log.d("PostExecuted",result);
     }
 }

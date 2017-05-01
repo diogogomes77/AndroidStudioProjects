@@ -43,7 +43,7 @@ public class RegistosController {
         return reg;
     }
 
-    public void setRegisto(Registo registo){
+    public String setRegisto(Registo registo){
         reg = registo;
         /*
         saveRegisto.println(reg.toString());
@@ -54,14 +54,17 @@ public class RegistosController {
             saveRegisto.println(reg.toString());
             regIndex++;
             reg = new Registo();
+            reg.setActivity(registo.getActivity());
+            return(".");
         }
+        return "";
     }
     public String startSaving() {
        // String result ="Trying to Save...\n";
         String result ="";
         if (!saving) {
 
-           // result+=("Saving...\n");
+            result+=("Recolha iniciada\n");
             //result+=(checkExternalMedia());
             checkExternalMedia();
             path = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
@@ -107,7 +110,7 @@ public class RegistosController {
                // bw.flush();
                 bw.close();
                 saving = false;
-            //    result+=("Saving Stoped\n");
+                result+=("Recolha parada\n");
             } catch (IOException e) {
                 e.printStackTrace();
                 result+=("ERRO: Saving not Stoped\n");
@@ -137,12 +140,34 @@ public class RegistosController {
        //return "\n\nExternal Media: readable="
        //         +mExternalStorageAvailable+" writable="+mExternalStorageWriteable+"\n";
     }
+    public boolean ficheiroComRegistos(){
+        if (file!=null) {
+            if (file.exists()) {
+                if (file.length() == 0) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }else {
+            return false;
+        }
+        return true;
+    }
 
     public void enviarRegistos(){
-       String localFile = file.getAbsolutePath();
-        Format formatter = new SimpleDateFormat("ddMMyyhhmmss");
-       String remoteFile = config.getFilename().concat("_").concat(formatter.format(new Date().getTime())).concat(config.getExtencao());
-        new Comunicacao(file).execute(config.getHost(),config.getUser(),config.getPassw(),localFile,remoteFile);
+      // String localFile = file.getAbsolutePath();
+      //  Format formatter = new SimpleDateFormat("ddMMyyhhmmss");
+      // String remoteFile = config.getFilename().concat("_").concat(formatter.format(new Date().getTime())).concat(config.getExtencao());
+      //  new Comunicacao(file).execute(config.getHost(),config.getUser(),config.getPassw(),localFile,remoteFile);
+        new Comunicacao(file,config).execute();
+        /*new Comunicacao(file,config,new Comunicacao.AsyncResponse(){
+            @Override
+            public void processFinish(String output){
+                //Here you will receive the result fired from async class
+                //of onPostExecute(result) method.
+            }
+        }).execute();*/
     }
 
 }
