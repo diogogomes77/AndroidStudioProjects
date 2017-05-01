@@ -11,20 +11,18 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
 
 public class Comunicacao extends AsyncTask<String, Integer, String> {
 
-   /* private static Comunicacao instance = null;
+    private File file;
 
-    protected Comunicacao() {
+    public Comunicacao(File file) {
+        this.file = file;
     }
-
-    public static Comunicacao getInstance() {
-        if(instance == null) {
-            instance = new Comunicacao();
-        }
-        return instance;
-    }*/
 
     @Override
     protected String doInBackground(String... params) {
@@ -64,6 +62,13 @@ public class Comunicacao extends AsyncTask<String, Integer, String> {
     }
     @Override
     protected void onPostExecute(String result) {
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(file);
+        } catch (FileNotFoundException e) {
+            // TODO
+        }
+        pw.close();
         Log.d("PostExecuted",result);
     }
 }

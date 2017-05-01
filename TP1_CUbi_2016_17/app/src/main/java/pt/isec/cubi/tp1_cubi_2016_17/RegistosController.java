@@ -3,6 +3,7 @@ import android.os.Environment;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -68,9 +69,7 @@ public class RegistosController {
             dir.mkdirs();
             file = new File(dir, config.getFilename()+(config.getExtencao()));
             try {
-                // limpa o ficheiro
-                PrintWriter pw = new PrintWriter(file);
-                pw.close();
+
 
                 fw = new FileWriter(file, true);
               //  result+=("ficheiro = "+file.getAbsolutePath()+"\n");
@@ -142,6 +141,7 @@ public class RegistosController {
        String localFile = file.getAbsolutePath();
         Format formatter = new SimpleDateFormat("ddMMyyhhmmss");
        String remoteFile = config.getFilename().concat("_").concat(formatter.format(new Date().getTime())).concat(config.getExtencao());
-        new Comunicacao().execute(config.getHost(),config.getUser(),config.getPassw(),localFile,remoteFile);
+        new Comunicacao(file).execute(config.getHost(),config.getUser(),config.getPassw(),localFile,remoteFile);
     }
+
 }
